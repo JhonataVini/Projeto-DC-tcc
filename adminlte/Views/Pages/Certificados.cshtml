@@ -1,0 +1,173 @@
+﻿@model IEnumerable<adminlte.Models.GoogleDriveFile>
+
+@{
+    ViewBag.Title = "Certificados";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>
+            Meus Certificados
+        </h1>
+        <ol class="breadcrumb">
+            <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li class="active">Certificados</li>
+        </ol>
+    </section>
+    <!-- Main content -->
+    <section class="content">
+        <!-- Default box -->
+        <div class="box">
+            <div class="box-body">
+                <div class="box-header">
+                    <h3 class="box-title"></h3>
+                </div>
+                <!-- /.box-header -->
+
+                @using (Html.BeginForm("UploadFile", "Pages", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
+
+                    <div class="form-group">
+                        <div class="col-md-2">
+                            <label for="file">Adicionar Arquivo:</label>
+                        </div>
+
+                        <div class="col-md-2">
+                            <input type="file" name="file" id="file" />
+                        </div>
+                        <div class="col-md-2">
+                            <input type="submit" class="btn btn-info pull-right" value="Enviar" />
+                        </div>
+                    </div>
+                }
+
+
+                @*<table class="table" border="1">
+                    <tr id="header">
+                        <th>
+                            <label>Created Date</label>
+                        </th>
+                        <th>
+                            <label>Name</label>
+                        </th>
+                        <th>
+                            <label>Type</label>
+                        </th>
+                        <th>
+                            <label>Size</label>
+                        </th>
+
+                        <th>
+                            Action
+                        </th>
+                    </tr>
+
+                    @if (Model.Count() > 0)
+                    {
+                        foreach (var item in Model)
+                        {
+                            <tr id="layouttable">
+                                <td>
+                                    @string.Format("{0: dd/MM/yyyy}", Convert.ToDateTime(item.CreatedTime))
+                                </td>
+                                <td>
+                                    @item.Name
+                                </td>
+                                <td>
+                                    @item.MimeType
+                                </td>
+                                <td>
+                                    @{
+                                        long? KiloByte = @item.Size / 1024;
+                                        string NewSize = KiloByte + " KB";
+                                    }
+                                    @NewSize
+                                </td>
+
+                                <td>
+                                    <a class="btn btn-primary" href="/Home/DownloadFile/@item.Id">Download</a>
+                                    @using (Html.BeginForm("DeleteFile", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                                    {
+                                        <input type="hidden" name=Id value="@item.Id">
+                                        <input type="submit" class="DeleteFile btn btn-danger" value="Delete" style="align-content:center;margin-top:5px;" />
+                                    }
+
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <td colspan="6">No files found</td>
+                    }
+
+                </table>*@
+
+
+                <table id="example1" class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Data de Criação</th>
+                                <th>Nome</th>
+                                <th>Tipo</th>
+                                <th>Tamanho</th>
+                                <th>Opções</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @if (Model.Count() > 0)
+                            {
+                                foreach (var item in Model)
+                                {
+
+                                    <tr>
+                                        <td>
+                                            @string.Format("{0: dd/MM/yyyy}", Convert.ToDateTime(item.CreatedTime))
+                                        </td>
+                                        <td>
+                                            @item.Name
+                                        </td>
+                                        <td>
+                                            @item.MimeType
+                                        </td>
+                                        <td>
+                                            @{
+                                                long? KiloByte = @item.Size / 1024;
+                                                string NewSize = KiloByte + " KB";
+                                            }
+                                            @NewSize
+                                        </td>
+                                        <td>
+                                            <div class="btn-group">
+                                                <a class="btn btn-primary" href="/Pages/DownloadFile/@item.Id">Download</a>
+                                                @using (Html.BeginForm("DeleteFile", "Pages", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                                                {
+                                                    <input type="hidden" name=Id value="@item.Id">
+                                                    <input type="submit" class="DeleteFile btn btn-danger" value="Delete" />
+                                                }
+                                            </div>                                          
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>                      
+                    </table>
+            </div>
+            <!-- /.box-body -->
+        </div>
+        <!-- /.box -->
+    </section>
+    <!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
+<script>
+    $(document).on('click', '.DownloadFile', function (fileId) {
+        var fileId = $(this).attr("data-key");
+        window.location.href = '/Home/DownloadFile/' + fileId;
+    });
+</script>

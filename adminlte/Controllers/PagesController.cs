@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using adminlte.Models;
+using adminlte.DAL;
 
 namespace adminlte.Controllers
 {
@@ -14,13 +15,60 @@ namespace adminlte.Controllers
         {
             return View();
         }
+        [HttpPost]
+        public ActionResult Cadastro(Aluno aluno)
+        {
+            if (ModelState.IsValid)
+            {
+                using (DirecionaCursos db = new DirecionaCursos())
+                {
+                    ViewBag.Escolaridade = new SelectList(db.Escolaridades, "ID", "Descricao");
+
+                    db.Alunos.Add(aluno);
+                    db.SaveChanges();
+                }
+                ModelState.Clear();
+                ViewBag.Message = aluno.Nome + " cadastrado com sucesso.";
+
+            }
+            return View();
+        }
+
 
         public ActionResult Login()
         {
             return View();
         }
-        // GET: Page
 
+        [HttpPost]
+        public ActionResult Login(Aluno aluno)
+        {
+            using (DirecionaCursos db = new DirecionaCursos())
+            {
+                var alu = db.Alunos.Single(a => a.Email == aluno.Email && a.Senha == aluno.Senha);
+                if (alu != null)
+                {
+                    Session["ID"] = alu.ID.ToString();
+                    Session["Nome"] = alu.Nome.ToString();
+                    return RedirectToAction("Logado");
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Email ou senha estão incorretos!");
+                }
+            }
+            return View();
+        }
+
+        public ActionResult Logado()
+        {
+            if (Session["ID"] != null)
+                return View();
+            else
+                return RedirectToAction("Login");
+        }
+
+        // GET: Page
         public ActionResult Inicio()
         {
             return View();

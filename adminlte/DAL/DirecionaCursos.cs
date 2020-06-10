@@ -11,6 +11,7 @@ namespace adminlte.DAL
         }
 
         public DbSet<Aluno> Alunos { get; set; }
+        public DbSet<Escolaridade> Escolaridades  { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
